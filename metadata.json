@@ -1,0 +1,8 @@
+{
+  "name": "Voice Through Image",
+  "description": "A non-profit documentary platform dedicated to reporting on marginalized community issues through visual storytelling and providing practical resources.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
