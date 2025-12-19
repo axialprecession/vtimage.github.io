@@ -3,7 +3,27 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- Primary Meta Tags -->
     <title>Voice Through Image | VTImage.org</title>
+    <meta name="title" content="Voice Through Image | VTImage.org" />
+    <meta name="description" content="A non-profit documentary platform bridging the gap between social invisibility and active empathy. We document homelessness and connect communities to verified resources." />
+    <meta name="keywords" content="Homelessness, Documentary, Non-profit, Social Justice, VTImage, Voice Through Image, California, Resources" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://vtimage.org/" />
+    <meta property="og:title" content="Voice Through Image | Documenting Reality, Restoring Dignity" />
+    <meta property="og:description" content="We document the unvarnished reality of homelessness and bridge marginalized individuals with immediate, verified resources." />
+    <meta property="og:image" content="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&q=80&w=1200" />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://vtimage.org/" />
+    <meta property="twitter:title" content="Voice Through Image | VTImage.org" />
+    <meta property="twitter:description" content="A non-profit documentary platform bridging the gap between social invisibility and active empathy." />
+    <meta property="twitter:image" content="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&q=80&w=1200" />
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Noto+Serif+TC:wght@300;500;700;900&display=swap" rel="stylesheet">
     <script>
@@ -23,6 +43,9 @@
                 accent: '#cc1d3b',
                 cream: '#faf9f6'
               }
+            },
+            backgroundImage: {
+              'noise': "url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22 opacity=%220.05%22/%3E%3C/svg%3E')",
             },
             boxShadow: {
               'soft': '0 20px 40px -15px rgba(0, 0, 0, 0.05)',
@@ -46,7 +69,44 @@
         }
       }
     </script>
-<script type="importmap">
+    <style>
+      body {
+        background-color: #faf9f6;
+        color: #1a1a1a;
+        overflow-x: hidden;
+        -webkit-font-smoothing: antialiased;
+      }
+      .bg-noise {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 50;
+        opacity: 0.4;
+        background-image: url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22 opacity=%220.05%22/%3E%3C/svg%3E');
+      }
+      ::selection {
+        background-color: rgba(204, 29, 59, 0.2);
+        color: #cc1d3b;
+      }
+      .fluid-title-zh {
+        font-size: clamp(2.5rem, 8vw, 6rem);
+      }
+      .fluid-title-en {
+        font-size: clamp(2.5rem, 6vw, 5.5rem);
+        line-height: 0.95;
+      }
+      .no-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+    </style>
+  <script type="importmap">
 {
   "imports": {
     "react": "https://esm.sh/react@^19.2.3",
@@ -64,6 +124,7 @@
 </script>
 </head>
   <body>
+    <div class="bg-noise"></div>
     <div id="root"></div>
     <script type="module" src="/index.tsx"></script>
   </body>

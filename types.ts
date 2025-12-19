@@ -1,3 +1,4 @@
+
 export interface User {
   id: string;
   name: string;
@@ -8,6 +9,11 @@ export interface User {
   verificationToken?: string;
 }
 
+export interface Chapter {
+  title: string;
+  time: number; // seconds
+}
+
 export interface Story {
   id: string;
   type: 'video' | 'photo';
@@ -16,7 +22,7 @@ export interface Story {
   description: string;
   imageUrl: string; 
   date: string;
-  localVideoUrl?: string;
+  localVideoUrl?: string; // Direct file URL only
   photos?: string[]; 
 }
 
