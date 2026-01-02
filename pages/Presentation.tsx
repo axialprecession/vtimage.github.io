@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { ViewState } from '../types';
-import { ChevronRight, ChevronLeft, X, Camera, Heart, Users, Globe, ShieldCheck, TrendingUp, Quote, CheckCircle2, ArrowRightLeft, DollarSign, Calendar, QrCode, Mic, Truck, Briefcase, Link, ExternalLink } from 'lucide-react';
+import { ChevronRight, ChevronLeft, X, Camera, Heart, Users, Globe, ShieldCheck, TrendingUp, Quote, CheckCircle2, ArrowRightLeft, DollarSign, Calendar, QrCode, Mic, Truck, Briefcase, Link, ExternalLink, Bot, Database, Zap, Map, UploadCloud, Smartphone } from 'lucide-react';
 import { Logo } from '../components/Logo';
 import { useLanguage } from '../context/LanguageContext';
 
@@ -11,7 +11,7 @@ interface PresentationProps {
 
 export const Presentation: React.FC<PresentationProps> = ({ setView }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const { t } = useLanguage();
+  const { t, font } = useLanguage();
 
   const slides = [
     // 1. Title
@@ -27,132 +27,160 @@ export const Presentation: React.FC<PresentationProps> = ({ setView }) => {
       type: 'problem',
       title: t('pres.s2.title'),
       highlight: t('pres.s2.text'),
+      sub: t('pres.s2.sub'),
       points: [t('pres.s2.p1'), t('pres.s2.p2'), t('pres.s2.p3')],
       bgImage: "https://images.unsplash.com/photo-1533035332503-455b5d19472e?auto=format&fit=crop&q=80&w=2000"
     },
-    // 3. Vision
+    // 3. Philosophy (Action over Pity) - NEW
     {
       type: 'vision',
       title: t('pres.s3.title'),
       vision: t('pres.s3.vis'),
       mission: t('pres.s3.mis'),
-      icon: <Camera className="w-20 h-20" />
+      icon: <Zap className="w-20 h-20" /> // Changing icon to Zap for Action
     },
-    // 4. Pillars
+    // 4. Ecosystem
     {
       type: 'pillars',
       title: t('pres.s4.title'),
       items: [
          { title: t('pres.s4.p1'), desc: t('pres.s4.d1'), icon: <Camera className="w-8 h-8 md:w-10 md:h-10"/> },
-         { title: t('pres.s4.p2'), desc: t('pres.s4.d2'), icon: <Globe className="w-8 h-8 md:w-10 md:h-10"/> },
-         { title: t('pres.s4.p3'), desc: t('pres.s4.d3'), icon: <TrendingUp className="w-8 h-8 md:w-10 md:h-10"/> }
+         { title: t('pres.s4.p2'), desc: t('pres.s4.d2'), icon: <Bot className="w-8 h-8 md:w-10 md:h-10"/> }, // Bot icon for AI
+         { title: t('pres.s4.p3'), desc: t('pres.s4.d3'), icon: <Users className="w-8 h-8 md:w-10 md:h-10"/> }
       ]
     },
-    // 5. Interview (Human Element)
-    {
-      type: 'quote',
-      title: t('pres.s5.title'),
-      quote: t('pres.s5.quote'),
-      author: t('pres.s5.author'),
-      bgImage: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=2000"
-    },
-    // 6. Differentiation (Comparison)
-    {
-      type: 'comparison',
-      title: t('pres.s6.title'),
-      col1: t('pres.s6.us'),
-      col2: t('pres.s6.others'),
-      points: [
-         { p1: t('pres.s6.p1'), p2: t('pres.s6.o1') },
-         { p1: t('pres.s6.p2'), p2: t('pres.s6.o2') },
-         { p1: t('pres.s6.p3'), p2: t('pres.s6.o3') }
-      ]
-    },
-    // 7. Ecosystem
-    {
-      type: 'ecosystem',
-      title: t('pres.s7.title'),
-      subtitle: t('pres.s7.sub'),
-      points: [t('pres.s7.p1'), t('pres.s7.p2')]
-    },
-    // 8. Technology
+    // 5. Tech AI (NEW)
     {
       type: 'tech',
-      title: t('pres.s8.title'),
-      stat: t('pres.s8.stat'),
-      desc: t('pres.s8.desc'),
-      text: t('pres.s8.text')
+      title: t('pres.s5.title'),
+      stat: t('pres.s5.stat'),
+      desc: t('pres.s5.desc'),
+      text: t('pres.s5.text'),
+      icon: <Bot className="w-24 h-24 text-brand-accent"/>
     },
-    // 9. Volunteers
+    // 6. The Digital Hub (NEW)
     {
       type: 'list',
-      title: t('pres.s9.title'),
-      subtitle: t('pres.s9.sub'),
-      items: [t('pres.s9.p1'), t('pres.s9.p2'), t('pres.s9.p3')]
+      title: t('pres.s6.title'),
+      subtitle: t('pres.s6.sub'),
+      items: [t('pres.s6.p1'), t('pres.s6.p2'), t('pres.s6.p3')],
+      icon: <Database className="w-16 h-16 text-blue-400 mb-6"/>
     },
-    // 10. Success Story
+    // 7. Democratized Storytelling (NEW)
     {
-      type: 'quote',
-      title: t('pres.s10.title'),
-      quote: t('pres.s10.text'),
-      author: "Maria's Journey",
-      bgImage: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=2000"
+      type: 'simple',
+      title: t('pres.s7.title'),
+      subtitle: t('pres.s7.sub'),
+      points: [t('pres.s7.p1'), t('pres.s7.p2'), t('pres.s7.p3')],
+      icon: <UploadCloud className="w-16 h-16 text-green-400 mb-6"/>
     },
-    // 11. Financials
-    {
-      type: 'pie',
-      title: t('pres.s11.title'),
-      subtitle: t('pres.s11.sub'),
-      segments: [
-         { label: t('pres.s11.p1'), val: '85%' },
-         { label: t('pres.s11.p2'), val: '10%' },
-         { label: t('pres.s11.p3'), val: '5%' }
-      ]
-    },
-    // 12. 501c3 Tax
-    {
-      type: 'tax',
-      title: t('pres.s12.title'),
-      stat: t('pres.s12.stat'),
-      subtitle: t('pres.s12.sub'),
-      text: t('pres.s12.text')
-    },
-    // 13. Roadmap
+    // 8. User Journey
     {
       type: 'roadmap',
-      title: t('pres.s13.title'),
-      steps: [t('pres.s13.q1'), t('pres.s13.q2'), t('pres.s13.q3')]
+      title: t('pres.s8.title'),
+      steps: t('pres.s8.steps').split(' -> ')
     },
-    // 14. Silence is Complicity
+    // 9. Dignity First (Philosophy)
     {
-      type: 'problem', // Using problem layout for high impact
-      title: t('pres.s14.title'),
-      highlight: t('pres.s14.text'),
-      sub: t('pres.s14.sub'),
-      bgImage: "https://images.unsplash.com/photo-1596386461350-326ccb383e9f?auto=format&fit=crop&q=80&w=2000" // Darker, serious mood
+      type: 'problem',
+      title: t('pres.s9.title'),
+      highlight: t('pres.s9.text'),
+      sub: t('pres.s9.sub'),
+      bgImage: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=2000"
     },
-    // 15. The Ask
+    // 10. Impact
     {
-      type: 'ask',
-      title: t('pres.s15.title'),
-      amount: t('pres.s15.goal'),
-      sub: t('pres.s15.sub'),
-      items: [
-        { label: t('pres.s15.i1'), icon: <Camera className="w-6 h-6" /> },
-        { label: t('pres.s15.i2'), icon: <Truck className="w-6 h-6" /> },
-        { label: t('pres.s15.i3'), icon: <Briefcase className="w-6 h-6" /> },
-        { label: t('pres.s15.i4'), icon: <Quote className="w-6 h-6" /> },
-        { label: t('pres.s15.i5'), icon: <Mic className="w-6 h-6" /> },
-        { label: t('pres.s15.i6'), icon: <Heart className="w-6 h-6" /> },
-        { label: t('pres.s15.i7'), icon: <Link className="w-6 h-6" /> },
+      type: 'stats_grid',
+      title: t('pres.s10.title'),
+      stats: [
+          { val: t('pres.s10.stat1'), icon: <Heart className="w-6 h-6"/> },
+          { val: t('pres.s10.stat2'), icon: <Camera className="w-6 h-6"/> },
+          { val: t('pres.s10.stat3'), icon: <Users className="w-6 h-6"/> }
       ]
     },
-    // 16. CTA
+    // 11. Quote
+    {
+      type: 'quote',
+      title: t('pres.s11.title'),
+      quote: t('pres.s11.quote'),
+      author: t('pres.s11.author'),
+      bgImage: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=2000"
+    },
+    // 12. Comparison (VTI vs Old)
+    {
+      type: 'comparison',
+      title: t('pres.s12.title'),
+      col1: t('pres.s12.us'),
+      col2: t('pres.s12.others'),
+      points: [
+         { p1: t('pres.s12.p1'), p2: t('pres.s12.o1') },
+         { p1: t('pres.s12.p2'), p2: t('pres.s12.o2') }
+      ]
+    },
+    // 13. Tech Stack
+    {
+      type: 'tech_stack',
+      title: t('pres.s13.title'),
+      highlight: t('pres.s13.stack'),
+      desc: t('pres.s13.desc')
+    },
+    // 14. Scalability
+    {
+      type: 'simple',
+      title: t('pres.s14.title'),
+      text: t('pres.s14.text'),
+      icon: <Globe className="w-16 h-16 text-blue-500 mb-6"/>
+    },
+    // 15. Financials
+    {
+      type: 'pie',
+      title: t('pres.s15.title'),
+      subtitle: t('pres.s15.sub'),
+      segments: [
+         { label: t('pres.s15.p1'), val: '60%' },
+         { label: t('pres.s15.p2'), val: '30%' },
+         { label: t('pres.s15.p3'), val: '10%' }
+      ]
+    },
+    // 16. Roadmap
+    {
+      type: 'roadmap',
+      title: t('pres.s16.title'),
+      steps: [t('pres.s16.q1'), t('pres.s16.q2'), t('pres.s16.q3')]
+    },
+    // 17. Official Status
+    {
+      type: 'tax',
+      title: t('pres.s17.title'),
+      stat: t('pres.s17.stat'),
+      text: t('pres.s17.text')
+    },
+    // 18. The Ask
+    {
+      type: 'ask',
+      title: t('pres.s18.title'),
+      amount: t('pres.s18.goal'),
+      sub: t('pres.s18.sub'),
+      items: [
+        { label: 'Dev Team', icon: <Bot className="w-6 h-6" /> },
+        { label: 'Van', icon: <Truck className="w-6 h-6" /> },
+        { label: 'Gear', icon: <Camera className="w-6 h-6" /> },
+        { label: 'Staff', icon: <Users className="w-6 h-6" /> },
+      ]
+    },
+    // 19. Why Now
+    {
+      type: 'problem',
+      title: t('pres.s19.title'),
+      highlight: t('pres.s19.text'),
+      bgImage: "https://images.unsplash.com/photo-1596386461350-326ccb383e9f?auto=format&fit=crop&q=80&w=2000"
+    },
+    // 20. CTA
     {
       type: 'final',
-      title: t('pres.s16.title'),
-      sub: t('pres.s16.sub'),
-      cta: t('pres.s16.cta')
+      title: t('pres.s20.title'),
+      sub: t('pres.s20.sub'),
+      cta: t('pres.s20.cta')
     }
   ];
 
@@ -204,8 +232,8 @@ export const Presentation: React.FC<PresentationProps> = ({ setView }) => {
             {/* TITLE SLIDE */}
             {slide.type === 'title' && (
                <div className="text-center">
-                  <div className="mb-6 inline-block p-4 border border-white/30 rounded-full backdrop-blur-md bg-white/10"><Camera className="w-12 h-12 text-brand-accent"/></div>
-                  <h1 className="text-5xl md:text-8xl font-serif font-bold mb-6 tracking-tighter leading-tight">{slide.title}</h1>
+                  <div className="mb-6 inline-block p-4 border border-white/30 rounded-full backdrop-blur-md bg-white/10"><Bot className="w-12 h-12 text-brand-accent"/></div>
+                  <h1 className={`text-5xl md:text-8xl font-bold mb-6 tracking-tighter leading-tight ${font}`}>{slide.title}</h1>
                   <p className="text-xl md:text-2xl text-gray-300 font-light mb-12">{slide.subtitle}</p>
                   <div className="inline-block px-6 py-2 border border-brand-accent text-brand-accent rounded-full text-sm uppercase tracking-[0.3em] font-bold">
                      {slide.tagline}
@@ -216,8 +244,8 @@ export const Presentation: React.FC<PresentationProps> = ({ setView }) => {
             {/* PROBLEM SLIDE */}
             {slide.type === 'problem' && (
                <div className="max-w-5xl mx-auto">
-                  <h2 className="text-3xl md:text-5xl font-serif font-bold mb-8 md:mb-10 text-brand-accent">{slide.title}</h2>
-                  <h3 className="text-4xl md:text-6xl font-bold mb-10 md:mb-12 leading-tight text-white">{slide.highlight}</h3>
+                  <h2 className={`text-3xl md:text-5xl font-bold mb-8 md:mb-10 text-brand-accent ${font}`}>{slide.title}</h2>
+                  <h3 className={`text-4xl md:text-6xl font-bold mb-10 md:mb-12 leading-tight text-white ${font}`}>{slide.highlight}</h3>
                   <div className="space-y-6">
                      {slide.points?.map((p: any, i: number) => (
                         <div key={i} className="flex items-start gap-4 md:gap-6 text-xl md:text-2xl font-light text-gray-300">
@@ -233,25 +261,25 @@ export const Presentation: React.FC<PresentationProps> = ({ setView }) => {
             {/* VISION SLIDE */}
             {slide.type === 'vision' && (
                <div className="text-center max-w-5xl mx-auto">
-                  <div className="mb-10 flex justify-center text-brand-accent">{slide.icon}</div>
-                  <h2 className="text-2xl md:text-4xl font-serif font-bold mb-8 text-gray-400">{slide.title}</h2>
-                  <p className="text-3xl md:text-6xl font-bold leading-tight mb-16 text-white">"{slide.vision}"</p>
-                  <p className="text-lg md:text-xl text-gray-400 border-t border-gray-800 pt-8">{slide.mission}</p>
+                  <div className="mb-10 flex justify-center text-brand-accent animate-pulse">{slide.icon}</div>
+                  <h2 className={`text-2xl md:text-4xl font-bold mb-8 text-gray-400 ${font}`}>{slide.title}</h2>
+                  <p className={`text-3xl md:text-6xl font-bold leading-tight mb-16 text-white ${font}`}>"{slide.vision}"</p>
+                  <p className="text-lg md:text-2xl text-gray-300 border-t border-gray-800 pt-8 leading-relaxed">{slide.mission}</p>
                </div>
             )}
 
-            {/* PILLARS SLIDE (RWD Fixed) */}
+            {/* PILLARS SLIDE */}
             {slide.type === 'pillars' && (
                <div className="text-center w-full">
-                  <h2 className="text-4xl md:text-5xl font-serif font-bold mb-12 md:mb-16">{slide.title}</h2>
+                  <h2 className={`text-4xl md:text-5xl font-bold mb-12 md:mb-16 ${font}`}>{slide.title}</h2>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-12">
                      {slide.items?.map((item: any, i: number) => (
-                        <div key={i} className="p-6 md:p-8 bg-white/5 border border-white/10 rounded-3xl hover:bg-white/10 transition-all flex flex-row md:flex-col items-center gap-4 md:gap-0 text-left md:text-center">
-                           <div className="mb-0 md:mb-6 flex justify-center text-brand-accent flex-shrink-0 bg-white/10 p-3 rounded-full md:bg-transparent md:p-0">
+                        <div key={i} className="p-6 md:p-8 bg-white/5 border border-white/10 rounded-3xl hover:bg-white/10 transition-all flex flex-row md:flex-col items-center gap-4 md:gap-0 text-left md:text-center group">
+                           <div className="mb-0 md:mb-6 flex justify-center text-brand-accent flex-shrink-0 bg-white/10 p-3 rounded-full md:bg-transparent md:p-0 group-hover:scale-110 transition-transform">
                               {item.icon}
                            </div>
                            <div>
-                              <h3 className="text-2xl md:text-3xl font-bold mb-2 md:mb-4">{item.title}</h3>
+                              <h3 className={`text-2xl md:text-3xl font-bold mb-2 md:mb-4 ${font}`}>{item.title}</h3>
                               <p className="text-gray-400 text-sm md:text-base">{item.desc}</p>
                            </div>
                         </div>
@@ -260,19 +288,56 @@ export const Presentation: React.FC<PresentationProps> = ({ setView }) => {
                </div>
             )}
 
+            {/* TECH SLIDE (Enhanced) */}
+            {slide.type === 'tech' && (
+               <div className="text-center max-w-4xl mx-auto">
+                  <div className="flex justify-center mb-8">{slide.icon}</div>
+                  <h2 className={`text-4xl md:text-5xl font-bold mb-6 ${font}`}>{slide.title}</h2>
+                  <div className="text-[100px] md:text-[150px] font-bold leading-none text-white/90 mb-4 tracking-tighter shadow-brand-accent drop-shadow-[0_0_15px_rgba(204,29,59,0.5)]">{slide.stat}</div>
+                  <div className="text-xl md:text-2xl uppercase tracking-[0.3em] text-brand-accent mb-12">{slide.desc}</div>
+                  <p className="text-xl md:text-2xl text-gray-300 leading-relaxed font-light">{slide.text}</p>
+               </div>
+            )}
+
+            {/* TECH STACK (NEW LAYOUT) */}
+            {slide.type === 'tech_stack' && (
+                <div className="text-center max-w-5xl mx-auto">
+                    <h2 className={`text-4xl md:text-5xl font-bold mb-12 text-gray-400 ${font}`}>{slide.title}</h2>
+                    <div className="p-10 border-2 border-brand-accent rounded-[3rem] bg-brand-accent/5 backdrop-blur-sm mb-8">
+                        <h3 className="text-3xl md:text-5xl font-mono font-bold text-white mb-4">{slide.highlight}</h3>
+                    </div>
+                    <p className="text-xl text-gray-400">{slide.desc}</p>
+                </div>
+            )}
+
+            {/* STATS GRID (NEW LAYOUT) */}
+            {slide.type === 'stats_grid' && (
+                <div className="max-w-5xl mx-auto w-full">
+                    <h2 className={`text-4xl md:text-5xl font-bold mb-16 text-center ${font}`}>{slide.title}</h2>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        {slide.stats?.map((stat: any, i: number) => (
+                            <div key={i} className="bg-white/10 p-8 rounded-[2rem] text-center border border-white/5 hover:bg-white/20 transition-all">
+                                <div className="flex justify-center mb-4 text-brand-accent">{stat.icon}</div>
+                                <div className="text-3xl md:text-4xl font-bold">{stat.val}</div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
+
             {/* QUOTE SLIDE */}
             {slide.type === 'quote' && (
                <div className="max-w-5xl mx-auto text-center">
                   <Quote className="w-12 h-12 md:w-16 md:h-16 text-brand-accent mx-auto mb-8 opacity-50" />
-                  <p className="text-3xl md:text-6xl font-serif italic leading-tight mb-12">"{slide.quote}"</p>
+                  <p className={`text-3xl md:text-6xl italic leading-tight mb-12 ${font}`}>"{slide.quote}"</p>
                   <p className="text-lg md:text-xl font-bold text-gray-400 uppercase tracking-widest">— {slide.author}</p>
                </div>
             )}
 
-            {/* COMPARISON SLIDE (RWD Fixed) */}
+            {/* COMPARISON SLIDE */}
             {slide.type === 'comparison' && (
                <div className="max-w-6xl mx-auto w-full">
-                  <h2 className="text-3xl md:text-4xl font-serif font-bold mb-12 text-center">{slide.title}</h2>
+                  <h2 className={`text-3xl md:text-4xl font-bold mb-12 text-center ${font}`}>{slide.title}</h2>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
                      <div className="bg-brand-accent/10 p-6 md:p-8 rounded-3xl border border-brand-accent/30">
                         <h3 className="text-xl md:text-2xl font-bold mb-6 md:mb-8 text-center text-brand-accent">{slide.col1}</h3>
@@ -300,10 +365,11 @@ export const Presentation: React.FC<PresentationProps> = ({ setView }) => {
                </div>
             )}
 
-            {/* ECOSYSTEM/TECH/LIST/SIMPLE/ROADMAP (Generic Text) */}
-            {(slide.type === 'ecosystem' || slide.type === 'tech' || slide.type === 'list' || slide.type === 'simple' || slide.type === 'roadmap') && (
+            {/* LIST/SIMPLE/ROADMAP */}
+            {(slide.type === 'list' || slide.type === 'simple' || slide.type === 'roadmap') && (
                <div className="max-w-4xl mx-auto text-center">
-                  <h2 className="text-4xl md:text-5xl font-serif font-bold mb-6">{slide.title}</h2>
+                  {slide.icon && <div className="flex justify-center">{slide.icon}</div>}
+                  <h2 className={`text-4xl md:text-5xl font-bold mb-6 ${font}`}>{slide.title}</h2>
                   
                   {slide.subtitle && <p className="text-xl md:text-2xl text-brand-accent mb-12">{slide.subtitle}</p>}
                   
@@ -313,11 +379,7 @@ export const Presentation: React.FC<PresentationProps> = ({ setView }) => {
                      </div>
                   )}
 
-                  {slide.stat && <div className="text-[80px] md:text-[120px] font-bold leading-none text-white/90 mb-4">{slide.stat}</div>}
-                  {slide.desc && <div className="text-lg md:text-xl uppercase tracking-widest text-gray-500 mb-8">{slide.desc}</div>}
-                  
-                  {slide.text && <p className="text-xl md:text-2xl text-gray-300 leading-relaxed">{slide.text}</p>}
-                  {slide.sub && <p className="text-gray-500 mt-6">{slide.sub}</p>}
+                  {slide.text && <p className="text-xl md:text-3xl text-gray-300 leading-relaxed font-light">{slide.text}</p>}
 
                   {slide.steps && (
                      <div className="flex flex-col md:flex-row justify-between mt-12 md:mt-16 gap-8 md:gap-0 border-t border-white/20 pt-10 text-left md:text-center">
@@ -344,7 +406,7 @@ export const Presentation: React.FC<PresentationProps> = ({ setView }) => {
             {slide.type === 'pie' && (
                <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center gap-12 md:gap-16">
                    <div className="flex-1 text-center md:text-left">
-                      <h2 className="text-4xl md:text-5xl font-serif font-bold mb-6">{slide.title}</h2>
+                      <h2 className={`text-4xl md:text-5xl font-bold mb-6 ${font}`}>{slide.title}</h2>
                       <p className="text-lg md:text-xl text-gray-400 mb-10">{slide.subtitle}</p>
                       <div className="space-y-4 md:space-y-6">
                          {slide.segments?.map((s: any, i: number) => (
@@ -370,15 +432,14 @@ export const Presentation: React.FC<PresentationProps> = ({ setView }) => {
                <div className="text-center max-w-3xl mx-auto border-2 border-white/20 p-8 md:p-16 rounded-[2rem] md:rounded-[3rem] bg-white/5 backdrop-blur-sm">
                   <ShieldCheck className="w-16 h-16 md:w-24 md:h-24 text-green-400 mx-auto mb-8" />
                   <h2 className="text-4xl md:text-6xl font-bold mb-4">{slide.stat}</h2>
-                  <p className="text-lg md:text-xl uppercase tracking-widest mb-10 text-gray-400">{slide.subtitle}</p>
                   <p className="text-xl md:text-2xl leading-relaxed">{slide.text}</p>
                </div>
             )}
 
-            {/* THE ASK (RWD Fixed) */}
+            {/* THE ASK */}
             {slide.type === 'ask' && (
                <div className="max-w-6xl mx-auto text-center w-full">
-                  <h2 className="text-2xl md:text-4xl font-serif font-bold mb-8 text-gray-400 uppercase tracking-widest">{slide.title}</h2>
+                  <h2 className={`text-2xl md:text-4xl font-bold mb-8 text-gray-400 uppercase tracking-widest ${font}`}>{slide.title}</h2>
                   <div className="text-[80px] md:text-[140px] font-bold leading-none text-brand-accent mb-4">{slide.amount}</div>
                   <p className="text-xl md:text-2xl mb-12 md:mb-16 text-white">{slide.sub}</p>
                   
@@ -398,7 +459,7 @@ export const Presentation: React.FC<PresentationProps> = ({ setView }) => {
             {/* FINAL CTA */}
             {slide.type === 'final' && (
                <div className="text-center">
-                  <h2 className="text-5xl md:text-8xl font-serif font-bold mb-8">{slide.title}</h2>
+                  <h2 className={`text-5xl md:text-8xl font-bold mb-8 ${font}`}>{slide.title}</h2>
                   <p className="text-xl md:text-3xl text-gray-300 mb-16">{slide.sub}</p>
                   
                   <a 

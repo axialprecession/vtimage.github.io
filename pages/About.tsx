@@ -9,7 +9,7 @@ interface AboutProps {
 }
 
 export const About: React.FC<AboutProps> = ({ setView }) => {
-  const { t, language } = useLanguage();
+  const { t, language, font } = useLanguage();
   const isChinese = language.startsWith('zh');
 
   const participationSteps = [
@@ -37,9 +37,9 @@ export const About: React.FC<AboutProps> = ({ setView }) => {
         {/* Header */}
         <div className="text-center mb-20 animate-slide-up">
           <div className="inline-block px-4 py-1.5 border border-brand-black/10 rounded-full text-[10px] font-bold uppercase tracking-[0.3em] mb-6 text-brand-accent">
-             Our Core Identity
+             {t('about.tag')}
           </div>
-          <h1 className={`text-5xl md:text-6xl font-bold text-brand-black mb-6 tracking-tight ${isChinese ? 'font-ming' : 'font-serif'}`}>{t('about.title')}</h1>
+          <h1 className={`text-5xl md:text-6xl font-bold text-brand-black mb-6 tracking-tight ${font}`}>{t('about.title')}</h1>
           <p className="text-xl md:text-2xl text-gray-500 max-w-3xl mx-auto font-light leading-relaxed">
             {t('about.subtitle')}
           </p>
@@ -47,14 +47,14 @@ export const About: React.FC<AboutProps> = ({ setView }) => {
 
         {/* Mission & Vision */}
         <div className="bg-brand-cream rounded-[3rem] p-10 md:p-16 mb-20 border border-gray-100 shadow-soft animate-slide-up" style={{ animationDelay: '0.1s' }}>
-          <h2 className={`text-3xl font-bold mb-10 flex items-center ${isChinese ? 'font-ming' : 'font-serif'}`}>
+          <h2 className={`text-3xl font-bold mb-10 flex items-center ${font}`}>
             <span className="w-2 h-8 bg-brand-accent mr-4 rounded-full"></span>
             {t('about.vision_title')}
           </h2>
           <div className="space-y-12">
             <div>
               <h3 className="text-xs font-bold text-gray-400 uppercase tracking-[0.2em] mb-4">{t('about.vision_sub')}</h3>
-              <p className={`text-2xl md:text-3xl text-brand-black leading-relaxed ${isChinese ? 'font-ming font-bold' : 'font-serif italic'}`}>
+              <p className={`text-2xl md:text-3xl text-brand-black leading-relaxed ${font} ${isChinese ? 'font-bold' : 'italic'}`}>
                 {t('about.vision_text')}
               </p>
             </div>
@@ -76,14 +76,14 @@ export const About: React.FC<AboutProps> = ({ setView }) => {
 
         {/* Participation Steps */}
         <div className="mb-24">
-          <h2 className={`text-4xl font-bold text-center mb-16 ${isChinese ? 'font-ming' : 'font-serif'}`}>{t('about.participate.title')}</h2>
+          <h2 className={`text-4xl font-bold text-center mb-16 ${font}`}>{t('about.participate.title')}</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {participationSteps.map((step, idx) => (
               <div key={idx} className="text-center p-8 rounded-[2.5rem] bg-white border border-gray-100 shadow-sm hover:shadow-xl hover:border-brand-accent/20 transition-all duration-300 hover:-translate-y-2 group">
                 <div className="mx-auto w-20 h-20 bg-brand-cream rounded-full flex items-center justify-center mb-6 group-hover:bg-brand-black transition-colors duration-300 shadow-inner">
                   <div className="text-brand-accent group-hover:text-white transition-colors">{step.icon}</div>
                 </div>
-                <h3 className={`text-xl font-bold mb-3 ${isChinese ? 'font-ming' : 'font-serif'}`}>{step.title}</h3>
+                <h3 className={`text-xl font-bold mb-3 ${font}`}>{step.title}</h3>
                 <p className="text-sm text-gray-500 leading-relaxed">{step.desc}</p>
               </div>
             ))}
@@ -97,7 +97,7 @@ export const About: React.FC<AboutProps> = ({ setView }) => {
               <Users className="w-12 h-12" />
            </div>
            <div className="flex-1 text-center md:text-left relative z-10">
-              <h3 className={`text-4xl font-bold text-brand-black mb-4 ${isChinese ? 'font-ming' : 'font-serif'}`}>{t('about.volunteer.title')}</h3>
+              <h3 className={`text-4xl font-bold text-brand-black mb-4 ${font}`}>{t('about.volunteer.title')}</h3>
               <p className="text-gray-600 text-lg mb-6 leading-relaxed font-light">{t('about.volunteer.desc')}</p>
               <div className="inline-block bg-gray-50 px-4 py-2 rounded-lg border border-gray-100 mb-8">
                  <p className="text-xs font-bold text-gray-500 uppercase tracking-widest">{t('about.volunteer.roles')}</p>
@@ -125,7 +125,7 @@ export const About: React.FC<AboutProps> = ({ setView }) => {
               Official 501(c)(3) Certified
             </div>
 
-            <h2 className={`text-5xl md:text-7xl font-bold mb-8 tracking-tighter leading-none ${isChinese ? 'font-ming' : 'font-serif'}`}>
+            <h2 className={`text-5xl md:text-7xl font-bold mb-8 tracking-tighter leading-none ${font}`}>
               {t('about.donate.title')}
             </h2>
             <p className="text-xl md:text-2xl text-gray-300 max-w-2xl mx-auto mb-6 leading-relaxed font-light">
@@ -149,7 +149,7 @@ export const About: React.FC<AboutProps> = ({ setView }) => {
         {/* Corporate History / Leadership */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
           <div className="bg-gray-50 rounded-[2.5rem] border border-gray-100 p-10 shadow-sm hover:shadow-md transition-shadow">
-            <h3 className={`text-xl font-bold mb-6 flex items-center gap-3 ${isChinese ? 'font-ming' : 'font-serif'}`}>
+            <h3 className={`text-xl font-bold mb-6 flex items-center gap-3 ${font}`}>
               <div className="bg-white p-2 rounded-full shadow-sm"><Calendar className="w-5 h-5 text-brand-accent" /></div>
               {t('about.history')}
             </h3>
@@ -159,14 +159,14 @@ export const About: React.FC<AboutProps> = ({ setView }) => {
           </div>
           
           <div className="bg-gray-50 rounded-[2.5rem] border border-gray-100 p-10 shadow-sm hover:shadow-md transition-shadow">
-            <h3 className={`text-xl font-bold mb-6 flex items-center gap-3 ${isChinese ? 'font-ming' : 'font-serif'}`}>
+            <h3 className={`text-xl font-bold mb-6 flex items-center gap-3 ${font}`}>
               <div className="bg-white p-2 rounded-full shadow-sm"><User className="w-5 h-5 text-brand-accent" /></div>
               {t('about.leadership')}
             </h3>
              <ul className="space-y-6">
                <li className="flex flex-col">
                   <span className="text-[10px] text-gray-400 uppercase font-bold tracking-widest mb-1">{t('about.founder')}</span>
-                  <span className={`font-bold text-xl text-gray-900 ${isChinese ? 'font-ming' : 'font-serif'}`}>Matchy Chyan</span>
+                  <span className={`font-bold text-xl text-gray-900 ${font}`}>Matchy Chyan</span>
                </li>
                <li className="flex flex-col">
                   <span className="text-[10px] text-gray-400 uppercase font-bold tracking-widest mb-1">{t('about.roles')}</span>
@@ -190,7 +190,7 @@ export const About: React.FC<AboutProps> = ({ setView }) => {
             </div>
 
             <div className="flex-1 text-center md:text-left">
-              <h3 className={`text-3xl font-bold text-brand-black mb-6 ${isChinese ? 'font-ming' : 'font-serif'}`}>{t('about.legal')}</h3>
+              <h3 className={`text-3xl font-bold text-brand-black mb-6 ${font}`}>{t('about.legal')}</h3>
               <p className="text-gray-600 leading-relaxed mb-10 font-light text-lg">
                 {t('about.legal_text')}
               </p>

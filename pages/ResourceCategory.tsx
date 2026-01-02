@@ -11,7 +11,7 @@ interface ResourceCategoryProps {
 }
 
 export const ResourceCategory: React.FC<ResourceCategoryProps> = ({ category, setView }) => {
-  const { t, language } = useLanguage();
+  const { t, language, font } = useLanguage();
   const resources = getResourcesByCategory(category);
 
   useEffect(() => {
@@ -68,7 +68,7 @@ export const ResourceCategory: React.FC<ResourceCategoryProps> = ({ category, se
           <div className="text-brand-accent text-xs font-black uppercase tracking-[0.3em] mb-4">
             Verified Directory
           </div>
-          <h1 className="text-5xl md:text-7xl font-serif font-bold text-gray-900 mb-6 tracking-tight">
+          <h1 className={`text-5xl md:text-7xl font-bold text-gray-900 mb-6 tracking-tight ${font}`}>
             {getCategoryLabel(category)}
           </h1>
           <p className="text-lg text-gray-500 font-light max-w-2xl leading-relaxed">
@@ -92,7 +92,7 @@ export const ResourceCategory: React.FC<ResourceCategoryProps> = ({ category, se
                         <span className="px-3 py-1 bg-gray-100 text-gray-600 rounded-md text-[10px] font-bold uppercase tracking-wider">{resource.region}</span>
                         <span className="px-3 py-1 bg-gray-100 text-gray-600 rounded-md text-[10px] font-bold uppercase tracking-wider">{resource.type}</span>
                      </div>
-                     <h3 className="text-3xl font-serif font-bold text-brand-black mb-4">
+                     <h3 className={`text-3xl font-bold text-brand-black mb-4 ${font}`}>
                         {getResourceField(resource, 'name')}
                      </h3>
                      <p className="text-gray-500 leading-relaxed mb-8 border-l-2 border-brand-accent/20 pl-4 italic">
@@ -124,7 +124,7 @@ export const ResourceCategory: React.FC<ResourceCategoryProps> = ({ category, se
               </div>
             ))
           ) : (
-            <div className="text-center py-20 text-gray-400 font-serif italic">
+            <div className="text-center py-20 text-gray-400 italic">
                No resources found.
             </div>
           )}

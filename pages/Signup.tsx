@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { ViewState } from '../types';
 import { useAuth } from '../context/AuthContext';
@@ -9,7 +10,7 @@ interface SignupProps {
 }
 
 export const Signup: React.FC<SignupProps> = ({ setView }) => {
-  const { t } = useLanguage();
+  const { t, font } = useLanguage();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -31,7 +32,7 @@ export const Signup: React.FC<SignupProps> = ({ setView }) => {
           <div className="mx-auto h-20 w-20 flex items-center justify-center">
             <Logo className="w-full h-full" />
           </div>
-          <h2 className="mt-6 text-3xl font-serif font-bold text-gray-900">
+          <h2 className={`mt-6 text-3xl font-bold text-gray-900 ${font}`}>
             {t('auth.signup.title')}
           </h2>
           <p className="mt-2 text-sm text-gray-600">

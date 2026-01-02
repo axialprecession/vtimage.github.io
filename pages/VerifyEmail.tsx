@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { ViewState } from '../types';
 import { useAuth } from '../context/AuthContext';
@@ -9,7 +10,7 @@ interface VerifyEmailProps {
 }
 
 export const VerifyEmail: React.FC<VerifyEmailProps> = ({ setView }) => {
-  const { t } = useLanguage();
+  const { t, font } = useLanguage();
   const { pendingEmail, verifyAccount, demoToken } = useAuth();
 
   const handleVerify = () => {
@@ -26,7 +27,7 @@ export const VerifyEmail: React.FC<VerifyEmailProps> = ({ setView }) => {
           <Mail className="h-10 w-10 text-blue-600" />
         </div>
         
-        <h2 className="text-3xl font-serif font-bold text-gray-900 mb-4">
+        <h2 className={`text-3xl font-bold text-gray-900 mb-4 ${font}`}>
           {t('auth.verify.title')}
         </h2>
         

@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { User as AppUser } from '../types';
 import { auth, isFirebaseConfigured } from '../firebaseConfig';
@@ -83,10 +84,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       // Demo Mode Login
       setUser({
         id: 'demo-user-123',
-        name: 'Demo User',
+        name: email.includes('admin') ? 'Admin User' : 'Demo User',
         email: email,
         isVerified: true,
-        isAdmin: false
+        isAdmin: email === 'admin@voicethroughimage.org' // Check email for admin status in Demo Mode
       });
       return { success: true };
     }
@@ -141,7 +142,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         name: name,
         email: email,
         isVerified: true,
-        isAdmin: false
+        isAdmin: email === 'admin@voicethroughimage.org'
       });
       return { success: true };
     }

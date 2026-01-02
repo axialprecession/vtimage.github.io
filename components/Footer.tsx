@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Mail, MapPin, Phone, ShieldCheck, Presentation, Globe } from 'lucide-react';
 import { Logo } from './Logo';
@@ -9,7 +10,8 @@ interface FooterProps {
 }
 
 export const Footer: React.FC<FooterProps> = ({ setView }) => {
-  const { t } = useLanguage();
+  const { t, language, font } = useLanguage();
+  const isChinese = language.startsWith('zh');
 
   return (
     <footer className="bg-brand-dark text-white pt-16 pb-8">
@@ -23,11 +25,13 @@ export const Footer: React.FC<FooterProps> = ({ setView }) => {
                 <Logo className="w-full h-full" />
               </div>
               <div>
-                <h3 className="text-2xl font-serif font-bold tracking-tight uppercase">Voice Through Image</h3>
+                <h3 className={`text-2xl font-bold tracking-tight uppercase ${font}`}>
+                  {isChinese ? '影像之聲' : 'Voice Through Image'}
+                </h3>
                 <a href="https://vtimage.org" className="text-brand-accent text-xs font-bold tracking-widest hover:text-white transition-colors">VTIMAGE.ORG</a>
               </div>
             </div>
-            <p className="text-gray-400 text-sm leading-relaxed">
+            <p className="text-gray-400 text-sm leading-relaxed font-light">
               {t('footer.desc')}
             </p>
             <div className="pt-2 border-l-2 border-brand-accent pl-4">
@@ -61,11 +65,11 @@ export const Footer: React.FC<FooterProps> = ({ setView }) => {
 
           {/* Legal / Quick Links */}
           <div className="space-y-4">
-            <h4 className="text-lg font-semibold tracking-wide uppercase text-gray-200">Governance</h4>
+            <h4 className="text-lg font-semibold tracking-wide uppercase text-gray-200">{t('footer.governance')}</h4>
              <ul className="space-y-2 text-gray-400 text-sm">
-              <li><a href="#" className="hover:text-white transition-colors">IRS Determination Letter</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Financial Reports</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Bylaws & Policies</a></li>
+              <li><a href="#" className="hover:text-white transition-colors">{t('footer.links.irs')}</a></li>
+              <li><a href="#" className="hover:text-white transition-colors">{t('footer.links.financial')}</a></li>
+              <li><a href="#" className="hover:text-white transition-colors">{t('footer.links.bylaws')}</a></li>
               
               {/* Presentation Mode Trigger */}
               <li className="pt-4">
@@ -73,7 +77,7 @@ export const Footer: React.FC<FooterProps> = ({ setView }) => {
                    onClick={() => setView?.(ViewState.PRESENTATION)}
                    className="flex items-center gap-2 text-brand-accent hover:text-white transition-colors font-bold uppercase text-[10px] tracking-widest border border-brand-accent/30 px-3 py-1.5 rounded-full hover:bg-brand-accent"
                  >
-                   <Presentation className="w-3 h-3" /> View Official Deck
+                   <Presentation className="w-3 h-3" /> {t('footer.links.deck')}
                  </button>
               </li>
             </ul>
@@ -86,10 +90,10 @@ export const Footer: React.FC<FooterProps> = ({ setView }) => {
         </div>
 
         <div className="border-t border-gray-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center text-gray-600 text-xs">
-          <p>&copy; {new Date().getFullYear()} Voice Through Image Inc. All Rights Reserved.</p>
+          <p>&copy; {new Date().getFullYear()} Voice Through Image Inc. {t('footer.rights')}</p>
           <div className="flex items-center gap-4 mt-4 md:mt-0">
-             <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
-             <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
+             <a href="#" className="hover:text-white transition-colors">{t('footer.privacy')}</a>
+             <a href="#" className="hover:text-white transition-colors">{t('footer.terms')}</a>
           </div>
         </div>
       </div>

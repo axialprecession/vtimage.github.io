@@ -97,11 +97,35 @@ export interface NewsResult {
   isFallback?: boolean;
 }
 
-const FALLBACK_NEWS_ZH: NewsResult = {
+const FALLBACK_NEWS_ZH_TW: NewsResult = {
   isFallback: true,
   text: `1. 加州政府宣佈 2025 年度撥款 15 億美元用於擴建主要城市（如洛杉磯與舊金山）的緊急住房基礎設施，重點關注家庭與退伍軍人。
 2. 洛杉磯縣最新的 2025 Homeless Count 初步數據顯示，由於「租金保障」政策的實施，特定區域的流離失所增長率有所放緩，但仍面臨巨大挑戰。
 3. 針對華裔社區的「文化敏感醫療」倡議在北加州試點成功，多個非營利機構將於本季度增加國粵語心理健康諮詢的時段。`,
+  sources: [
+    { title: "California Housing Finance Agency", uri: "https://www.calhfa.ca.gov" },
+    { title: "LA Homeless Services Authority (LAHSA)", uri: "https://www.lahsa.org" },
+    { title: "SF Dept of Homelessness & Supportive Housing", uri: "https://hsh.sfgov.org" }
+  ]
+};
+
+const FALLBACK_NEWS_ZH_CN: NewsResult = {
+  isFallback: true,
+  text: `1. 加州政府宣布 2025 年度拨款 15 亿美元用于扩建主要城市（如洛杉矶与旧金山）的紧急住房基础设施，重点关注家庭与退伍军人。
+2. 洛杉矶县最新的 2025 Homeless Count 初步数据显示，由于「租金保障」政策的实施，特定区域的流离失所增长率有所放缓，但仍面临巨大挑战。
+3. 针对华裔社区的「文化敏感医疗」倡议在北加州试点成功，多个非营利机构将于本季度增加国粤语心理健康咨询的时段。`,
+  sources: [
+    { title: "California Housing Finance Agency", uri: "https://www.calhfa.ca.gov" },
+    { title: "LA Homeless Services Authority (LAHSA)", uri: "https://www.lahsa.org" },
+    { title: "SF Dept of Homelessness & Supportive Housing", uri: "https://hsh.sfgov.org" }
+  ]
+};
+
+const FALLBACK_NEWS_ES: NewsResult = {
+  isFallback: true,
+  text: `1. California asigna $1.5 mil millones para infraestructura de vivienda de emergencia en 2025 en centros principales, dirigidos a familias y veteranos.
+2. Nuevos datos de LAHSA de 2025 sugieren una tasa de crecimiento más lenta en la falta de vivienda en distritos clave debido a programas temporales de protección de alquiler.
+3. Las iniciativas de salud mental culturalmente sensibles se están ampliando en el norte de California este trimestre, aumentando la capacidad de apoyo en español.`,
   sources: [
     { title: "California Housing Finance Agency", uri: "https://www.calhfa.ca.gov" },
     { title: "LA Homeless Services Authority (LAHSA)", uri: "https://www.lahsa.org" },
@@ -125,7 +149,9 @@ export const fetchDailyNews = async (language: string = 'en'): Promise<NewsResul
   // Immediate fallback for Demo Mode
   if (!process.env.API_KEY) {
       console.log("Demo Mode: Returning fallback news immediately.");
-      return language.startsWith('zh') ? FALLBACK_NEWS_ZH : FALLBACK_NEWS_EN;
+      if (language === 'zh-CN') return FALLBACK_NEWS_ZH_CN;
+      if (language === 'es') return FALLBACK_NEWS_ES;
+      return language.startsWith('zh') ? FALLBACK_NEWS_ZH_TW : FALLBACK_NEWS_EN;
   }
 
   try {
@@ -137,7 +163,7 @@ export const fetchDailyNews = async (language: string = 'en'): Promise<NewsResul
       Current Date: ${today} (Year 2025).
       Provide a 3-point summary of critical social policy or homelessness news in California from the last 7 days.
       Focus on 2025 updates.
-      Language: ${language.startsWith('zh') ? 'Traditional Chinese' : 'English'}.
+      Language: ${language}.
     `;
 
     const response = await ai.models.generateContent({
@@ -162,6 +188,8 @@ export const fetchDailyNews = async (language: string = 'en'): Promise<NewsResul
   } catch (error: any) {
     console.warn("News Fetch Error:", error);
     // Return fallback on any error to ensure UI looks good
-    return language.startsWith('zh') ? FALLBACK_NEWS_ZH : FALLBACK_NEWS_EN;
+    if (language === 'zh-CN') return FALLBACK_NEWS_ZH_CN;
+    if (language === 'es') return FALLBACK_NEWS_ES;
+    return language.startsWith('zh') ? FALLBACK_NEWS_ZH_TW : FALLBACK_NEWS_EN;
   }
 };

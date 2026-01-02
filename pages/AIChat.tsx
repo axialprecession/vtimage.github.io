@@ -11,18 +11,24 @@ interface Message {
 }
 
 export const AIChat: React.FC = () => {
-  const { t } = useLanguage();
+  const { t, font } = useLanguage();
   const [messages, setMessages] = useState<Message[]>([
     { role: 'model', text: t('chat.welcome') }
   ]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  
   const chatSessionRef = useRef<Chat | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    chatSessionRef.current = createChatSession();
+    // Attempt to initialize chat session on mount
+    try {
+        chatSessionRef.current = createChatSession();
+    } catch (e) {
+        console.warn("Chat session init failed (likely no API key in Demo Mode):", e);
+    }
     scrollToBottom();
   }, []);
 
@@ -45,9 +51,12 @@ export const AIChat: React.FC = () => {
     setIsLoading(true);
 
     try {
+      // Re-initialize if missing (e.g. after error recovery)
       if (!chatSessionRef.current) {
          chatSessionRef.current = createChatSession();
       }
+      
+      // Add a placeholder message for the model response
       setMessages(prev => [...prev, { role: 'model', text: '' }]);
       
       const streamResult = await chatSessionRef.current.sendMessageStream({ message: userMsg });
@@ -59,14 +68,26 @@ export const AIChat: React.FC = () => {
           fullText += c.text;
           setMessages(prev => {
             const newMsgs = [...prev];
-            newMsgs[newMsgs.length - 1] = { role: 'model', text: fullText };
+            const lastMsg = newMsgs[newMsgs.length - 1];
+            // Ensure we are updating the model's message
+            if (lastMsg.role === 'model') {
+                lastMsg.text = fullText;
+            }
             return newMsgs;
           });
         }
       }
     } catch (err: any) {
+      console.error(err);
       setError(t('chat.error'));
-      setMessages(prev => prev.filter(m => m.text !== ''));
+      // If we added a placeholder but failed immediately, remove it
+      setMessages(prev => {
+          const last = prev[prev.length - 1];
+          if (last.role === 'model' && last.text === '') {
+              return prev.slice(0, -1);
+          }
+          return prev;
+      });
     } finally {
       setIsLoading(false);
     }
@@ -79,13 +100,13 @@ export const AIChat: React.FC = () => {
         {/* Chat Header */}
         <div className="bg-white border-b border-gray-50 px-6 py-4 flex items-center justify-center relative">
            <div className="flex items-center gap-3">
-              <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+              <div className={`w-2 h-2 rounded-full ${isLoading ? 'bg-brand-accent animate-ping' : 'bg-green-500'}`}></div>
               <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">AI Support Assistant</span>
            </div>
         </div>
 
         {/* Chat Messages */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-white">
+        <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-white scroll-smooth">
            {messages.map((msg, idx) => (
              <div key={idx} className={`flex w-full ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                 <div className={`flex max-w-[85%] items-end gap-3 ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
@@ -95,14 +116,20 @@ export const AIChat: React.FC = () => {
                    </div>
 
                    {/* Bubble */}
-                   <div className={`px-5 py-3.5 rounded-2xl text-sm leading-relaxed ${
+                   <div className={`px-5 py-3.5 rounded-2xl text-sm leading-relaxed shadow-sm ${
                      msg.role === 'user' 
                        ? 'bg-brand-black text-white rounded-br-none' 
                        : 'bg-gray-100 text-gray-800 rounded-bl-none'
                    }`}>
-                      <div className="whitespace-pre-wrap font-medium">
+                      <div className={`whitespace-pre-wrap ${font}`}>
                         {msg.text}
-                        {msg.role === 'model' && msg.text === '' && <span className="animate-pulse">Thinking...</span>}
+                        {/* Cursor / Loading Indicator */}
+                        {msg.role === 'model' && idx === messages.length - 1 && isLoading && (
+                           <span className="inline-block w-1.5 h-4 ml-1 bg-brand-accent animate-pulse align-middle rounded-full"></span>
+                        )}
+                        {msg.role === 'model' && msg.text === '' && isLoading && (
+                           <span className="text-gray-400 text-xs animate-pulse">Thinking...</span>
+                        )}
                       </div>
                    </div>
                 </div>
@@ -114,7 +141,7 @@ export const AIChat: React.FC = () => {
         {/* Input Area */}
         <div className="p-4 md:p-6 bg-white border-t border-gray-50">
            {error && (
-             <div className="mb-4 flex items-center gap-2 text-red-600 bg-red-50 p-3 rounded-xl text-xs font-medium">
+             <div className="mb-4 flex items-center gap-2 text-red-600 bg-red-50 p-3 rounded-xl text-xs font-medium animate-in fade-in slide-in-from-bottom-2">
                 <AlertCircle className="w-4 h-4" /> {error}
              </div>
            )}
@@ -123,7 +150,7 @@ export const AIChat: React.FC = () => {
                 type="text"
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
-                placeholder="Type your message..."
+                placeholder={t('chat.placeholder')}
                 disabled={isLoading}
                 className="flex-1 bg-gray-50 border-0 rounded-full px-6 py-4 text-sm md:text-base outline-none focus:ring-2 focus:ring-brand-accent/10 focus:bg-white transition-all text-gray-800 placeholder-gray-400"
               />
@@ -136,7 +163,7 @@ export const AIChat: React.FC = () => {
               </button>
            </form>
            <p className="text-center text-[10px] text-gray-300 mt-4 uppercase tracking-wider">
-              AI generated response. Call 911 for emergencies.
+              {t('chat.disclaimer')}
            </p>
         </div>
       </div>

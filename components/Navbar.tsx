@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Menu, X, Heart, MessageCircle, Check, User as UserIcon, LogOut, ArrowRight } from 'lucide-react';
+import { Menu, X, Heart, MessageCircle, Check, User as UserIcon, LogOut, ArrowRight, Shield } from 'lucide-react';
 import { ViewState } from '../types';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage, Language } from '../context/LanguageContext';
@@ -15,7 +15,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, setView }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const { user, logout, isAuthenticated } = useAuth();
-  const { language, setLanguage, t } = useLanguage();
+  const { language, setLanguage, t, font } = useLanguage();
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const [langMenuOpen, setLangMenuOpen] = useState(false);
 
@@ -67,7 +67,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, setView }) => {
                 <div className="md:hidden flex items-center gap-3">
                   <span className="text-2xl">VTI</span>
                   {isChinese && (
-                    <span className="text-xl font-ming font-bold tracking-widest text-gray-800 border-l-2 border-gray-300 pl-3 pt-0.5">
+                    <span className={`text-xl ${font} font-bold tracking-widest text-gray-800 border-l-2 border-gray-300 pl-3 pt-0.5`}>
                       影像之聲
                     </span>
                   )}
@@ -77,7 +77,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, setView }) => {
                 <div className="hidden md:flex items-center gap-3">
                   <span className="text-xl">Voice Through Image</span>
                   {isChinese && (
-                    <span className="text-lg font-ming font-bold tracking-widest text-gray-600 border-l-2 border-gray-300 pl-3 pt-0.5">
+                    <span className={`text-lg ${font} font-bold tracking-widest text-gray-600 border-l-2 border-gray-300 pl-3 pt-0.5`}>
                       影像之聲
                     </span>
                   )}
@@ -96,7 +96,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, setView }) => {
                 className={`relative px-4 py-2 rounded-full text-xs font-bold uppercase tracking-widest transition-all duration-300 ${
                   currentView === item.value
                     ? 'text-black bg-black/5'
-                    : 'text-gray-500 hover:text-black hover:bg-black/5'
+                    : 'text-gray-500 hover:text-black hover:text-black hover:bg-black/5'
                 }`}
               >
                 {item.label}
@@ -158,7 +158,16 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, setView }) => {
 
             {/* Auth Section */}
             {isAuthenticated && user ? (
-              <div className="relative ml-4">
+              <div className="relative ml-4 flex items-center gap-2">
+                {user.isAdmin && (
+                    <button 
+                        onClick={() => setView(ViewState.ADMIN_DASHBOARD)}
+                        className="p-2 bg-brand-accent/10 text-brand-accent hover:bg-brand-accent hover:text-white rounded-full transition-all"
+                        title="Admin Dashboard"
+                    >
+                        <Shield className="w-4 h-4" />
+                    </button>
+                )}
                 <button 
                   onClick={() => setProfileMenuOpen(!profileMenuOpen)}
                   className="flex items-center gap-3 pl-1 pr-1 py-1 rounded-full hover:bg-gray-50 transition-all border border-transparent hover:border-gray-200"
@@ -227,7 +236,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, setView }) => {
               <button
                 key={item.value}
                 onClick={() => { setView(item.value); setIsOpen(false); }}
-                className={`text-3xl font-serif font-bold text-left py-2 border-b border-gray-100 ${
+                className={`text-3xl ${font} font-bold text-left py-2 border-b border-gray-100 ${
                   currentView === item.value ? 'text-brand-accent' : 'text-black'
                 }`}
               >
@@ -235,27 +244,36 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, setView }) => {
               </button>
             ))}
             
+            {user?.isAdmin && (
+               <button
+                 onClick={() => { setView(ViewState.ADMIN_DASHBOARD); setIsOpen(false); }}
+                 className={`text-3xl ${font} font-bold text-left py-2 border-b border-gray-100 flex items-center gap-3 text-brand-accent`}
+               >
+                 {t('nav.admin')} <Shield className="w-6 h-6" />
+               </button>
+            )}
+
             <button
                onClick={() => { setView(ViewState.CHAT); setIsOpen(false); }}
-               className="text-3xl font-serif font-bold text-left py-2 border-b border-gray-100 flex items-center gap-3 text-blue-600"
+               className={`text-3xl ${font} font-bold text-left py-2 border-b border-gray-100 flex items-center gap-3 text-blue-600`}
             >
                {t('nav.chat')} <MessageCircle className="w-6 h-6" />
             </button>
 
             <button
                onClick={() => { setView(ViewState.DONATE); setIsOpen(false); }}
-               className="text-3xl font-serif font-bold text-left py-2 border-b border-gray-100 flex items-center gap-3 text-brand-accent"
+               className={`text-3xl ${font} font-bold text-left py-2 border-b border-gray-100 flex items-center gap-3 text-brand-accent`}
             >
                {t('nav.donate')} <Heart className="w-6 h-6 fill-current" />
             </button>
 
             <div className="pt-8 grid grid-cols-2 gap-4">
                {isAuthenticated ? (
-                 <button onClick={() => { logout(); setIsOpen(false); }} className="px-6 py-4 bg-gray-100 rounded-2xl text-sm font-bold">Sign Out</button>
+                 <button onClick={() => { logout(); setIsOpen(false); }} className="px-6 py-4 bg-gray-100 rounded-2xl text-sm font-bold">{t('nav.signout')}</button>
                ) : (
                  <>
-                   <button onClick={() => { setView(ViewState.LOGIN); setIsOpen(false); }} className="px-6 py-4 bg-gray-100 rounded-2xl text-sm font-bold">Log In</button>
-                   <button onClick={() => { setView(ViewState.SIGNUP); setIsOpen(false); }} className="px-6 py-4 bg-black text-white rounded-2xl text-sm font-bold">Join Us</button>
+                   <button onClick={() => { setView(ViewState.LOGIN); setIsOpen(false); }} className="px-6 py-4 bg-gray-100 rounded-2xl text-sm font-bold">{t('nav.login')}</button>
+                   <button onClick={() => { setView(ViewState.SIGNUP); setIsOpen(false); }} className="px-6 py-4 bg-black text-white rounded-2xl text-sm font-bold">{t('nav.join')}</button>
                  </>
                )}
             </div>

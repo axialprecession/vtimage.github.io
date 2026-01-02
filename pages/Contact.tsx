@@ -4,7 +4,7 @@ import { Mail, Phone, MapPin, Send, MessageCircle } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
 export const Contact: React.FC = () => {
-  const { t, language } = useLanguage();
+  const { t, language, font } = useLanguage();
   const isChinese = language.startsWith('zh');
 
   return (
@@ -16,9 +16,9 @@ export const Contact: React.FC = () => {
           <div className="space-y-12 animate-slide-up">
             <div>
               <div className="inline-block px-4 py-1.5 border border-brand-black/10 rounded-full text-[10px] font-bold uppercase tracking-[0.3em] mb-6 text-brand-accent bg-white">
-                 Get in Touch
+                 {t('contact.tag')}
               </div>
-              <h1 className={`text-5xl md:text-6xl font-bold mb-6 text-brand-black ${isChinese ? 'font-ming' : 'font-serif'}`}>
+              <h1 className={`text-5xl md:text-6xl font-bold mb-6 text-brand-black ${font}`}>
                 {t('contact.title')}
               </h1>
               <p className="text-xl text-gray-500 font-light leading-relaxed max-w-md">
@@ -32,7 +32,7 @@ export const Contact: React.FC = () => {
                   <MapPin className="w-6 h-6" />
                 </div>
                 <div>
-                  <h3 className={`font-bold text-lg text-brand-black mb-2 ${isChinese ? 'font-ming' : 'font-serif'}`}>{t('contact.office')}</h3>
+                  <h3 className={`font-bold text-lg text-brand-black mb-2 ${font}`}>{t('contact.office')}</h3>
                   <p className="text-gray-500 leading-relaxed">20153 Paseo Del Prado<br/>Walnut, CA 91789</p>
                 </div>
               </div>
@@ -42,7 +42,7 @@ export const Contact: React.FC = () => {
                   <Mail className="w-6 h-6" />
                 </div>
                 <div>
-                  <h3 className={`font-bold text-lg text-brand-black mb-2 ${isChinese ? 'font-ming' : 'font-serif'}`}>{t('contact.email')}</h3>
+                  <h3 className={`font-bold text-lg text-brand-black mb-2 ${font}`}>{t('contact.email')}</h3>
                   <p className="text-gray-500">VITorg@gmail.com</p>
                   <p className="text-gray-400 text-xs mt-2 uppercase tracking-widest font-bold">Media & Partnerships</p>
                 </div>
@@ -53,9 +53,9 @@ export const Contact: React.FC = () => {
                   <Phone className="w-6 h-6" />
                 </div>
                 <div>
-                  <h3 className={`font-bold text-lg text-brand-black mb-2 ${isChinese ? 'font-ming' : 'font-serif'}`}>{t('contact.phone')}</h3>
+                  <h3 className={`font-bold text-lg text-brand-black mb-2 ${font}`}>{t('contact.phone')}</h3>
                   <p className="text-gray-500">+1 (555) 012-3456</p>
-                  <p className="text-gray-400 text-xs mt-2 uppercase tracking-widest font-bold">Mon-Fri, 9am - 5pm PST</p>
+                  <p className="text-gray-400 text-xs mt-2 uppercase tracking-widest font-bold">{t('contact.office_hours')}</p>
                 </div>
               </div>
             </div>
@@ -67,7 +67,7 @@ export const Contact: React.FC = () => {
                <MessageCircle className="w-64 h-64 text-brand-black" />
             </div>
             
-            <h2 className={`text-3xl font-bold mb-8 text-brand-black relative z-10 ${isChinese ? 'font-ming' : 'font-serif'}`}>
+            <h2 className={`text-3xl font-bold mb-8 text-brand-black relative z-10 ${font}`}>
               {t('contact.form.title')}
             </h2>
             

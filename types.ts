@@ -16,14 +16,17 @@ export interface Chapter {
 
 export interface Story {
   id: string;
-  type: 'video' | 'photo';
+  type: 'video' | 'photo' | 'audio';
   title: string;
   category: 'Homelessness' | 'Domestic Violence' | 'Addiction' | 'Social Justice';
   description: string;
   imageUrl: string; 
   date: string;
   localVideoUrl?: string; // Direct file URL only
+  audioUrl?: string; // For podcasts/interviews
   photos?: string[]; 
+  location?: string;
+  authorName?: string;
 }
 
 export interface Resource {
@@ -44,6 +47,7 @@ export interface Resource {
   operatingHoursZhTW?: string;
   operatingHoursZhCN?: string;
   website?: string;
+  isDynamic?: boolean; // New field to identify resources added via Admin Panel
 }
 
 export enum ViewState {
@@ -61,5 +65,6 @@ export enum ViewState {
   CHAT = 'CHAT',
   VOLUNTEER = 'VOLUNTEER',
   PRESENTATION = 'PRESENTATION',
-  DONATE = 'DONATE'
+  DONATE = 'DONATE',
+  ADMIN_DASHBOARD = 'ADMIN_DASHBOARD'
 }

@@ -6,7 +6,7 @@ import { Camera, Save, User, Mail, Upload, Trash2, AlertTriangle, X } from 'luci
 import { useLanguage } from '../context/LanguageContext';
 
 export const Profile: React.FC = () => {
-  const { t } = useLanguage();
+  const { t, font } = useLanguage();
   const { user, updateProfile, deleteAccount } = useAuth();
   const [name, setName] = useState(user?.name || '');
   const [isEditing, setIsEditing] = useState(false);
@@ -42,7 +42,7 @@ export const Profile: React.FC = () => {
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         
         <div className="mb-8">
-          <h1 className="text-3xl font-serif font-bold text-gray-900">{t('profile.title')}</h1>
+          <h1 className={`text-3xl font-bold text-gray-900 ${font}`}>{t('profile.title')}</h1>
           <p className="text-gray-600">{t('profile.manage')}</p>
         </div>
 
@@ -83,7 +83,7 @@ export const Profile: React.FC = () => {
 
             <div className="space-y-6 max-w-lg">
               <div className="flex items-center justify-between border-b border-gray-100 pb-2 mb-4">
-                <h3 className="text-lg font-medium text-gray-900">{t('profile.title')}</h3>
+                <h3 className={`text-lg font-medium text-gray-900 ${font}`}>{t('profile.title')}</h3>
                 <button 
                   onClick={() => isEditing ? handleSave() : setIsEditing(true)}
                   className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${
@@ -159,7 +159,7 @@ export const Profile: React.FC = () => {
                     <AlertTriangle className="w-8 h-8 text-red-600" />
                 </div>
                 
-                <h3 className="text-2xl font-serif font-bold text-center mb-4">Are you absolutely sure?</h3>
+                <h3 className={`text-2xl font-bold text-center mb-4 ${font}`}>Are you absolutely sure?</h3>
                 <p className="text-center text-gray-500 mb-8 leading-relaxed">
                     This action cannot be undone. This will permanently delete your account <b>{user.email}</b> and remove your data from our servers.
                 </p>

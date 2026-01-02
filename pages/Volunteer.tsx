@@ -9,7 +9,7 @@ interface VolunteerProps {
 }
 
 export const Volunteer: React.FC<VolunteerProps> = ({ setView }) => {
-  const { t } = useLanguage();
+  const { t, font } = useLanguage();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
@@ -30,13 +30,13 @@ export const Volunteer: React.FC<VolunteerProps> = ({ setView }) => {
           <div className="w-20 h-20 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-6">
             <CheckCircle className="w-10 h-10 text-green-600" />
           </div>
-          <h2 className="text-3xl font-serif font-bold text-gray-900 mb-4">{t('volunteer.success')}</h2>
+          <h2 className={`text-3xl font-bold text-gray-900 mb-4 ${font}`}>{t('volunteer.success')}</h2>
           <p className="text-gray-500 mb-10 leading-relaxed">Our coordinator will review your profile and reach out within 3-5 business days.</p>
           <button 
             onClick={() => setView(ViewState.HOME)} 
             className="w-full py-4 bg-brand-black text-white rounded-full font-bold uppercase tracking-widest text-sm hover:scale-105 transition-all"
           >
-            Return Home
+            {t('common.back')}
           </button>
         </div>
       </div>
@@ -51,7 +51,7 @@ export const Volunteer: React.FC<VolunteerProps> = ({ setView }) => {
           className="flex items-center text-gray-400 hover:text-black transition-colors mb-12 group"
         >
           <ArrowLeft className="w-5 h-5 mr-2 group-hover:-translate-x-2 transition-transform" /> 
-          <span className="text-xs font-bold uppercase tracking-widest">Back to Mission</span>
+          <span className="text-xs font-bold uppercase tracking-widest">{t('common.back')}</span>
         </button>
 
         <div className="bg-white rounded-[3rem] shadow-xl overflow-hidden border border-gray-100">
@@ -60,7 +60,7 @@ export const Volunteer: React.FC<VolunteerProps> = ({ setView }) => {
                <HeartHandshake className="w-40 h-40" />
             </div>
             <div className="relative z-10">
-               <h1 className="text-4xl md:text-5xl font-serif font-bold mb-4">{t('volunteer.title')}</h1>
+               <h1 className={`text-4xl md:text-5xl font-bold mb-4 ${font}`}>{t('volunteer.title')}</h1>
                <p className="text-gray-400 text-lg font-light max-w-xl">{t('volunteer.subtitle')}</p>
             </div>
           </div>
@@ -123,8 +123,8 @@ export const Volunteer: React.FC<VolunteerProps> = ({ setView }) => {
               disabled={isSubmitting} 
               className="w-full py-5 bg-brand-accent text-white rounded-full font-bold uppercase tracking-widest text-sm hover:bg-red-700 transition-all disabled:bg-gray-200 disabled:cursor-not-allowed flex items-center justify-center gap-3 shadow-lg"
             >
-               {isSubmitting ? 'Processing Application...' : (
-                 <>Submit Application <Send className="w-4 h-4" /></>
+               {isSubmitting ? t('common.processing') : (
+                 <>{t('common.submit')} <Send className="w-4 h-4" /></>
                )}
             </button>
           </form>

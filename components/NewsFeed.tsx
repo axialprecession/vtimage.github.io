@@ -5,7 +5,7 @@ import { Newspaper, Loader2, ExternalLink, Sparkles, Database, ShieldAlert } fro
 import { useLanguage } from '../context/LanguageContext';
 
 export const NewsFeed: React.FC = () => {
-  const { t, language } = useLanguage();
+  const { t, language, font } = useLanguage();
   const [news, setNews] = useState<NewsResult | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -48,7 +48,7 @@ export const NewsFeed: React.FC = () => {
     return (
       <div className="bg-gray-50 p-12 rounded-[2rem] border border-gray-100 text-center text-gray-400 animate-in fade-in">
         <ShieldAlert className="w-12 h-12 mx-auto mb-6 opacity-20" />
-        <p className="font-serif italic text-xl">{t('home.news.error')}</p>
+        <p className="italic text-xl">{t('home.news.error')}</p>
         <button 
           onClick={() => window.location.reload()}
           className="mt-6 px-8 py-3 bg-black text-white rounded-full text-[10px] font-black uppercase tracking-widest hover:scale-105 transition-all"
@@ -71,7 +71,7 @@ export const NewsFeed: React.FC = () => {
               <Newspaper className="w-5 h-5 text-white" />
             </div>
             <div>
-              <h2 className="text-3xl font-serif font-bold">{t('home.news.title')}</h2>
+              <h2 className={`text-3xl font-bold ${font}`}>{t('home.news.title')}</h2>
               <p className="text-gray-400 font-light text-sm">{t('home.news.subtitle')}</p>
             </div>
           </div>
@@ -88,11 +88,11 @@ export const NewsFeed: React.FC = () => {
         {loading ? (
           <div className="flex flex-col items-center justify-center py-24 text-gray-400">
             <Loader2 className="w-10 h-10 animate-spin mb-6 text-brand-accent" />
-            <p className="font-serif italic tracking-wide">{t('home.news.loading')}</p>
+            <p className="italic tracking-wide">{t('home.news.loading')}</p>
           </div>
         ) : (
           <div className="space-y-10">
-            <div className="prose prose-lg max-w-none text-gray-700 leading-relaxed whitespace-pre-wrap font-medium font-serif italic border-l-4 border-gray-50 pl-8">
+            <div className={`prose prose-lg max-w-none text-gray-700 leading-relaxed whitespace-pre-wrap font-medium italic border-l-4 border-gray-50 pl-8 ${font}`}>
               {news?.text}
             </div>
             

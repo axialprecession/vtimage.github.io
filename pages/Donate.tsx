@@ -9,7 +9,7 @@ interface DonateProps {
 }
 
 export const Donate: React.FC<DonateProps> = ({ setView }) => {
-  const { t, language } = useLanguage();
+  const { t, language, font } = useLanguage();
   const isChinese = language.startsWith('zh');
 
   return (
@@ -23,7 +23,7 @@ export const Donate: React.FC<DonateProps> = ({ setView }) => {
           <div className="inline-block px-4 py-1.5 border border-white/20 rounded-full text-[10px] font-bold uppercase tracking-[0.3em] mb-8 text-brand-accent bg-white/5 backdrop-blur-sm">
              501(c)(3) Certified
           </div>
-          <h1 className={`text-5xl md:text-7xl font-bold mb-8 tracking-tight leading-tight ${isChinese ? 'font-ming' : 'font-serif'}`}>
+          <h1 className={`text-5xl md:text-7xl font-bold mb-8 tracking-tight leading-tight ${font}`}>
             {t('donate.page.title')}
           </h1>
           <p className="text-xl text-gray-300 font-light max-w-2xl mx-auto leading-relaxed">
@@ -38,7 +38,7 @@ export const Donate: React.FC<DonateProps> = ({ setView }) => {
           
           <div className="flex flex-col md:flex-row gap-12 items-center mb-16">
              <div className="flex-1">
-                <h2 className={`text-3xl font-bold mb-6 text-brand-black ${isChinese ? 'font-ming' : 'font-serif'}`}>{t('donate.tiers.title')}</h2>
+                <h2 className={`text-3xl font-bold mb-6 text-brand-black ${font}`}>{t('donate.tiers.title')}</h2>
                 <div className="space-y-6">
                    <div className="flex items-start gap-4 p-4 rounded-2xl hover:bg-gray-50 transition-colors">
                       <div className="bg-brand-cream p-3 rounded-full text-brand-accent"><Camera className="w-6 h-6"/></div>

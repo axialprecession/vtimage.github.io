@@ -1,10 +1,12 @@
 
-import React, { useState } from 'react';
-import { Search, Home, Utensils, Gavel, Users, Brain, Shield, ChevronRight, Sparkles, Loader2, MessageSquare, ArrowRight, X, MapPin, Phone, Clock, Globe } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Search, Home, Utensils, Gavel, Users, Brain, Shield, ChevronRight, Sparkles, Loader2, MessageSquare, ArrowRight, X, MapPin, Phone, Clock, Globe, Navigation, Database } from 'lucide-react';
 import { ViewState, Resource } from '../types';
 import { getAIResourceAssistance } from '../services/geminiService';
 import { useLanguage } from '../context/LanguageContext';
-import { searchResources, getSearchSuggestions } from '../data/resources';
+import { searchResources, getSearchSuggestions, resources as staticResources } from '../data/resources';
+import { db, isFirebaseConfigured } from '../firebaseConfig';
+import { collection, getDocs } from 'firebase/firestore';
 
 interface ResourcesProps {
   setView: (view: ViewState) => void;
@@ -12,7 +14,7 @@ interface ResourcesProps {
 }
 
 export const Resources: React.FC<ResourcesProps> = ({ setView, onCategorySelect }) => {
-  const { t, language } = useLanguage();
+  const { t, language, font } = useLanguage();
   const [aiQuery, setAiQuery] = useState('');
   const [aiResult, setAiResult] = useState<string | null>(null);
   const [isAiLoading, setIsAiLoading] = useState(false);
@@ -23,6 +25,28 @@ export const Resources: React.FC<ResourcesProps> = ({ setView, onCategorySelect 
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [searchResults, setSearchResults] = useState<Resource[] | null>(null);
+  
+  // Dynamic Resource Loading
+  const [allResources, setAllResources] = useState<Resource[]>(staticResources);
+
+  useEffect(() => {
+    const fetchDynamicResources = async () => {
+        if (isFirebaseConfigured && db) {
+            try {
+                const snapshot = await getDocs(collection(db, "resources"));
+                const dynamicResources: Resource[] = [];
+                snapshot.forEach(doc => {
+                    const data = doc.data() as Omit<Resource, 'id'>;
+                    dynamicResources.push({ id: doc.id, ...data });
+                });
+                setAllResources([...dynamicResources, ...staticResources]);
+            } catch (e) {
+                console.error("Error fetching dynamic resources:", e);
+            }
+        }
+    };
+    fetchDynamicResources();
+  }, []);
 
   const handleAiSearch = async (e?: React.FormEvent, customQuery?: string) => {
     if (e) e.preventDefault();
@@ -43,9 +67,17 @@ export const Resources: React.FC<ResourcesProps> = ({ setView, onCategorySelect 
   const handleDirectorySearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
     setDirectoryQuery(val);
+    
+    // Simple local search suggestions on the combined list
     if (val.length > 1) {
-      setSuggestions(getSearchSuggestions(val));
-      setShowSuggestions(true);
+        const q = val.toLowerCase();
+        const suggestionsSet = new Set<string>();
+        allResources.forEach(r => {
+            if (r.name.toLowerCase().includes(q)) suggestionsSet.add(r.name);
+            if (r.location.toLowerCase().includes(q)) suggestionsSet.add(r.location.split(',')[1]?.trim() || '');
+        });
+        setSuggestions(Array.from(suggestionsSet).filter(s => s).slice(0, 5));
+        setShowSuggestions(true);
     } else {
       setSuggestions([]);
       setShowSuggestions(false);
@@ -56,7 +88,15 @@ export const Resources: React.FC<ResourcesProps> = ({ setView, onCategorySelect 
     setDirectoryQuery(query);
     setShowSuggestions(false);
     if (query.trim()) {
-      const results = searchResources(query);
+      const q = query.toLowerCase().trim();
+      const results = allResources.filter(r => 
+        r.name.toLowerCase().includes(q) ||
+        r.nameZhTW?.toLowerCase().includes(q) ||
+        r.nameZhCN?.toLowerCase().includes(q) ||
+        r.type.toLowerCase().includes(q) ||
+        r.location.toLowerCase().includes(q) ||
+        r.description.toLowerCase().includes(q)
+      );
       setSearchResults(results);
     } else {
       setSearchResults(null);
@@ -82,6 +122,10 @@ export const Resources: React.FC<ResourcesProps> = ({ setView, onCategorySelect 
       if (field === 'hours') return resource.operatingHoursZhCN || resource.operatingHours;
       if (field === 'type') return resource.typeZhCN || t(`resources.cat.${resource.type.toLowerCase().replace(' ', '_')}`);
     }
+    if (language === 'es') {
+      // Basic Spanish mapping for type since we don't have full DB translations yet
+      if (field === 'type') return t(`resources.cat.${resource.type.toLowerCase().replace(' ', '_')}`);
+    }
     if (field === 'name') return resource.name;
     if (field === 'desc') return resource.description;
     if (field === 'hours') return resource.operatingHours || 'Hours not listed';
@@ -89,10 +133,10 @@ export const Resources: React.FC<ResourcesProps> = ({ setView, onCategorySelect 
   };
 
   const suggestedPrompts = [
-    { label: language === 'zh-TW' ? "尋找收容所" : "Find Shelters", query: "Find open emergency shelters in California" },
-    { label: language === 'zh-TW' ? "法律援助" : "Legal Aid", query: "Find pro-bono legal aid for eviction" },
-    { label: language === 'zh-TW' ? "食物發放" : "Free Food", query: "Find food banks near me" },
-    { label: language === 'zh-TW' ? "心理諮商" : "Mental Health", query: "Find culturally sensitive therapy" }
+    { label: t('resources.prompt.shelter'), query: "Find open emergency shelters in California" },
+    { label: t('resources.prompt.legal'), query: "Find pro-bono legal aid for eviction" },
+    { label: t('resources.prompt.food'), query: "Find food banks near me" },
+    { label: t('resources.prompt.mental'), query: "Find culturally sensitive therapy" }
   ];
 
   const categories = [
@@ -112,12 +156,14 @@ export const Resources: React.FC<ResourcesProps> = ({ setView, onCategorySelect 
         
         <div className="max-w-5xl mx-auto px-6 relative z-10 text-center">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/10 text-brand-accent text-xs font-bold uppercase tracking-widest mb-8">
-            <Sparkles className="w-3 h-3" /> AI Resource Assistant
+            <Sparkles className="w-3 h-3" /> {t('resources.hero.tag')}
           </div>
           
-          <h1 className={`text-4xl md:text-6xl font-bold mb-6 tracking-tight ${isChinese ? 'font-ming' : 'font-serif'}`}>How can we help you today?</h1>
+          <h1 className={`text-4xl md:text-6xl font-bold mb-6 tracking-tight ${font}`}>
+            {t('resources.hero.title')}
+          </h1>
           <p className="text-lg text-gray-400 font-light max-w-2xl mx-auto mb-12">
-            Search for resources using natural language. We'll connect you with verified services.
+            {t('resources.hero.sub')}
           </p>
 
           <div className="max-w-3xl mx-auto relative">
@@ -126,7 +172,7 @@ export const Resources: React.FC<ResourcesProps> = ({ setView, onCategorySelect 
                 type="text" 
                 value={aiQuery}
                 onChange={(e) => setAiQuery(e.target.value)}
-                placeholder="Ex: I need a safe place to sleep in Los Angeles..."
+                placeholder={t('resources.search.placeholder')}
                 className="w-full bg-white/10 backdrop-blur-xl border border-white/20 rounded-full pl-8 pr-32 py-5 text-lg text-white placeholder-gray-500 outline-none focus:bg-white focus:text-black focus:placeholder-gray-400 transition-all duration-300 shadow-2xl"
               />
               <button 
@@ -134,7 +180,7 @@ export const Resources: React.FC<ResourcesProps> = ({ setView, onCategorySelect 
                 disabled={isAiLoading} 
                 className="absolute right-2 top-2 bottom-2 px-8 bg-brand-accent text-white rounded-full font-bold uppercase tracking-widest text-xs hover:bg-white hover:text-brand-accent transition-all disabled:opacity-50 flex items-center gap-2"
               >
-                 {isAiLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Search'}
+                 {isAiLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : t('resources.search.btn')}
               </button>
             </form>
 
@@ -154,13 +200,13 @@ export const Resources: React.FC<ResourcesProps> = ({ setView, onCategorySelect 
                <div className="mt-12 bg-white rounded-[2.5rem] p-8 md:p-12 text-left text-brand-black shadow-2xl animate-fade-in border border-gray-100">
                   <div className="flex items-center gap-3 mb-6 text-brand-accent border-b border-gray-100 pb-4">
                     <MessageSquare className="w-5 h-5" />
-                    <span className="font-bold uppercase tracking-widest text-xs">Assistant Response</span>
+                    <span className="font-bold uppercase tracking-widest text-xs">{t('resources.ai_result')}</span>
                   </div>
-                  <div className={`prose prose-lg max-w-none text-gray-700 leading-relaxed ${isChinese ? 'font-ming' : 'font-serif'}`}>
+                  <div className={`prose prose-lg max-w-none text-gray-700 leading-relaxed ${font}`}>
                      {aiResult}
                   </div>
                   <div className="mt-8 flex justify-end">
-                    <button onClick={() => setAiResult(null)} className="text-xs font-bold text-gray-400 hover:text-black uppercase tracking-widest">Close</button>
+                    <button onClick={() => setAiResult(null)} className="text-xs font-bold text-gray-400 hover:text-black uppercase tracking-widest">{t('resources.close')}</button>
                   </div>
                </div>
             )}
@@ -175,9 +221,9 @@ export const Resources: React.FC<ResourcesProps> = ({ setView, onCategorySelect 
            {/* Directory Header with Search */}
            <div className="mb-12 flex flex-col lg:flex-row justify-between items-start lg:items-end gap-8">
              <div>
-               <h2 className={`text-3xl font-bold text-brand-black mb-2 ${isChinese ? 'font-ming' : 'font-serif'}`}>Browse Directory</h2>
+               <h2 className={`text-3xl font-bold text-brand-black mb-2 ${font}`}>{t('resources.directory.title')}</h2>
                <p className="text-gray-500">
-                 {searchResults ? `Found ${searchResults.length} results for "${directoryQuery}"` : "Select a category to view verified organizations."}
+                 {searchResults ? `Found ${searchResults.length} results for "${directoryQuery}"` : t('resources.directory.sub')}
                </p>
              </div>
 
@@ -187,7 +233,7 @@ export const Resources: React.FC<ResourcesProps> = ({ setView, onCategorySelect 
                   value={directoryQuery}
                   onChange={handleDirectorySearchChange}
                   onKeyDown={(e) => e.key === 'Enter' && executeDirectorySearch(directoryQuery)}
-                  placeholder="Search by name, city, or service..."
+                  placeholder={t('resources.directory.search_placeholder')}
                   className="w-full bg-gray-50 border border-gray-200 rounded-full pl-6 pr-12 py-4 text-sm focus:outline-none focus:border-brand-black focus:ring-1 focus:ring-brand-black transition-all"
                 />
                 {directoryQuery ? (
@@ -231,8 +277,9 @@ export const Resources: React.FC<ResourcesProps> = ({ setView, onCategorySelect 
                          <div className="flex gap-3 mb-4">
                             <span className="px-3 py-1 bg-gray-50 text-gray-600 rounded-full text-[10px] font-bold uppercase tracking-wider border border-gray-200">{resource.region}</span>
                             <span className="px-3 py-1 bg-brand-cream text-brand-black rounded-full text-[10px] font-bold uppercase tracking-wider border border-brand-accent/10">{resource.type}</span>
+                            {resource.isDynamic && <span className="px-3 py-1 bg-green-50 text-green-700 rounded-full text-[10px] font-bold uppercase tracking-wider flex items-center gap-1 border border-green-200"><Database className="w-3 h-3"/> New</span>}
                          </div>
-                         <h3 className={`text-3xl font-bold text-brand-black mb-4 ${isChinese ? 'font-ming' : 'font-serif'}`}>
+                         <h3 className={`text-3xl font-bold text-brand-black mb-4 ${font}`}>
                             {getResourceField(resource, 'name')}
                          </h3>
                          <p className="text-gray-500 leading-relaxed mb-8 border-l-2 border-brand-accent/20 pl-4 italic">
@@ -240,14 +287,26 @@ export const Resources: React.FC<ResourcesProps> = ({ setView, onCategorySelect 
                          </p>
     
                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                            <div className="flex items-center gap-3 text-gray-600 bg-gray-50 p-3 rounded-xl">
-                               <MapPin className="w-4 h-4 text-brand-accent" />
-                               <span className="font-medium">{resource.location}</span>
-                            </div>
-                            <div className="flex items-center gap-3 text-gray-600 bg-gray-50 p-3 rounded-xl">
+                            {/* GOOGLE MAPS LINK - UPDATED to handle confidential locations */}
+                            <a 
+                              href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                                resource.location.toLowerCase().includes('confidential') 
+                                  ? resource.location.replace(/\(Confidential\)/i, '').trim() 
+                                  : resource.location
+                              )}`} 
+                              target="_blank" 
+                              rel="noreferrer"
+                              className="flex items-center gap-3 text-gray-600 bg-gray-50 p-3 rounded-xl hover:bg-brand-accent/5 hover:text-brand-accent transition-all group cursor-pointer"
+                            >
+                               <MapPin className="w-4 h-4 text-brand-accent group-hover:scale-110 transition-transform" />
+                               <span className="font-medium underline decoration-dotted decoration-gray-400 group-hover:decoration-brand-accent">{resource.location}</span>
+                               <Navigation className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity ml-auto" />
+                            </a>
+
+                            <a href={`tel:${resource.contact.replace(/\D/g,'')}`} className="flex items-center gap-3 text-gray-600 bg-gray-50 p-3 rounded-xl hover:bg-green-50 hover:text-green-700 transition-colors">
                                <Phone className="w-4 h-4 text-brand-accent" />
                                <span className="font-bold">{resource.contact}</span>
-                            </div>
+                            </a>
                             <div className="flex items-center gap-3 text-gray-600 bg-gray-50 p-3 rounded-xl">
                                <Clock className="w-4 h-4 text-brand-accent" />
                                <span>{getResourceField(resource, 'hours')}</span>
@@ -266,7 +325,7 @@ export const Resources: React.FC<ResourcesProps> = ({ setView, onCategorySelect 
                ) : (
                  <div className="text-center py-20">
                     <p className="text-xl font-serif text-gray-400 italic mb-4">No results found for "{directoryQuery}".</p>
-                    <button onClick={clearDirectorySearch} className="text-brand-accent font-bold hover:underline mb-8">View All Categories</button>
+                    <button onClick={clearDirectorySearch} className="text-brand-accent font-bold hover:underline mb-8">{t('resources.directory.view_all')}</button>
                     
                     <div className="bg-blue-50 p-6 rounded-3xl inline-block max-w-md mx-auto shadow-inner">
                         <p className="text-sm text-blue-800 mb-3 font-bold">Can't find what you need? Try asking our AI.</p>
@@ -307,7 +366,7 @@ export const Resources: React.FC<ResourcesProps> = ({ setView, onCategorySelect 
                    </div>
                    
                    <div className="relative z-10">
-                     <h3 className={`text-xl font-bold mb-2 text-brand-black ${isChinese ? 'font-ming' : 'font-serif'}`}>{cat.label}</h3>
+                     <h3 className={`text-xl font-bold mb-2 text-brand-black ${font}`}>{cat.label}</h3>
                      <p className="text-sm text-gray-500 font-light leading-relaxed group-hover:text-gray-700 transition-colors">{cat.desc}</p>
                    </div>
                  </button>
